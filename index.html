@@ -3,422 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ujian Online - Perkemahan SDN 02 Pagi</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Ujian PUPK Pramuka Penggalang - Kwarcab Kepulauan Seribu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .blink-red { animation: blinkRed 1s infinite; }
-        @keyframes blinkRed {
-            0% { background-color: #fee2e2; border-color: #ef4444; color: #b91c1c; }
-            50% { background-color: #ef4444; border-color: #ef4444; color: #ffffff; }
-            100% { background-color: #fee2e2; border-color: #ef4444; color: #b91c1c; }
-        }
-        .option-card { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-        .nav-btn { transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease; }
-        .nav-btn:active { transform: scale(0.92); }
+        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; color: #1e293b; }
+        @keyframes pulse-slow { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.7; transform:scale(1.05); } }
+        .animate-pulse-slow { animation: pulse-slow 1.5s infinite ease-in-out; }
+        .exam-card { box-shadow: 0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06); border:1px solid #cbd5e1; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between">
+<header class="bg-gradient-to-r from-emerald-800 to-teal-900 text-white shadow-md py-4 px-6">
+<div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+<div class="flex items-center space-x-3"><div class="bg-amber-500 p-2 rounded-lg text-emerald-950 font-extrabold text-xl shadow">⚜️</div><div>
+<h1 class="text-lg sm:text-xl font-bold tracking-tight">PUPK PRAMUKA PENGGALANG 2026</h1>
+<p class="text-xs text-emerald-200">Lomba Regu Prestasi Tinggi - Kwarcab Kepulauan Seribu</p></div></div>
+<div id="header-user-info" class="hidden text-xs sm:text-sm bg-emerald-950/60 px-3 py-1.5 rounded-lg border border-emerald-700/50 flex flex-wrap items-center gap-2">
+<div>Regu: <span id="disp-regu" class="font-bold text-amber-300">-</span></div><div>|</div>
+<div>Peserta: <span id="disp-nama" class="font-bold text-amber-300">-</span></div></div></div></header>
 
-<header class="bg-emerald-800 text-white shadow-md">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center">
-        <div class="flex items-center space-x-3">
-            <span class="text-3xl">⚜️</span>
-            <div>
-                <h1 class="font-bold text-lg tracking-wide">PERKEMAHAN SDN 02 PAGI</h1>
-                <p class="text-xs text-emerald-200">Portal Ujian Pengetahuan Umum & Kepramukaan - Tahun 2026</p>
-            </div>
-        </div>
-        <div id="userInfoHeader" class="hidden text-right text-sm bg-emerald-900 px-3 py-1.5 rounded-lg border border-emerald-700 mt-2 sm:mt-0">
-            <p><span class="font-semibold text-emerald-300">Regu:</span> <span id="displayRegu">-</span></p>
-            <p><span class="font-semibold text-emerald-300">Peserta:</span> <span id="displayPeserta">-</span></p>
-        </div>
-    </div>
-</header>
-
-<main class="max-w-4xl w-full mx-auto p-4 flex-grow my-4">
-
-<section id="pageRegister" class="bg-white rounded-xl shadow-lg border border-slate-200 p-6 md:p-8">
-    <div class="text-center mb-6">
-        <div class="inline-block p-3 bg-emerald-100 text-emerald-800 rounded-full text-4xl mb-2">⛺</div>
-        <h2 class="text-2xl font-bold text-emerald-900">Ujian Online PUPK & Pengetahuan Umum 2026</h2>
-        <p class="text-sm text-slate-500 mt-1">Materi: SKU Penggalang Ramu, Pengetahuan Umum (SD Kelas 4-6) & Kepramukaan</p>
-    </div>
-    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 mb-6 rounded-r-lg text-sm text-amber-900">
-        <p class="font-bold mb-1">📌 Petunjuk Ujian:</p>
-        <ul class="list-disc pl-5 space-y-1">
-            <li>Jumlah Soal: 35 Soal Pilihan Ganda (Urutan diacak sistem).</li>
-            <li>Waktu Pengerjaan: 10 Menit (Akan muncul peringatan lampu merah saat 3 menit terakhir).</li>
-            <li>Pastikan identitas Nama Regu dan Nama Peserta diisi dengan benar sebelum mulai!</li>
-        </ul>
-    </div>
-    <form id="formRegister" class="space-y-4">
-        <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Nama Regu Pramuka</label>
-            <input type="text" id="reguName" required placeholder="Contoh: Regu Elang Putih / Sakura" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:outline-none">
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1">Nama Peserta Ujian</label>
-            <input type="text" id="pesertaName" required placeholder="Contoh: Ahmad Fauzan" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:outline-none">
-        </div>
-        <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-3 rounded-lg shadow transition duration-200 text-base mt-2 cursor-pointer">Mulai Ujian Sekarang 🚀</button>
-    </form>
+<main class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6 my-auto">
+<section id="view-reg" class="bg-white rounded-xl p-6 sm:p-8 exam-card max-w-xl mx-auto">
+<div class="text-center mb-6"><div class="inline-block p-3 bg-emerald-100 text-emerald-800 rounded-full mb-3 text-2xl">📋</div>
+<h2 class="text-xl sm:text-2xl font-extrabold text-slate-800">Formulir Peserta Ujian PUPK</h2>
+<p class="text-sm text-slate-500 mt-1">Silakan masukkan identitas Regu dan Nama Lengkap sebelum memulai.</p></div>
+<form id="form-reg" class="space-y-4">
+<div><label class="block text-sm font-semibold text-slate-700 mb-1">Nama Regu Pramuka</label>
+<input type="text" id="input-regu" required placeholder="Contoh: Regu Garuda / Regu Melati" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 outline-none transition text-sm"></div>
+<div><label class="block text-sm font-semibold text-slate-700 mb-1">Nama Lengkap Peserta</label>
+<input type="text" id="input-nama" required placeholder="Contoh: Budi Pratama" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 outline-none transition text-sm"></div>
+<div class="pt-2"><button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 px-6 rounded-lg shadow-md transition duration-200 text-base flex items-center justify-center space-x-2"><span>Mulai Ujian Sekarang</span><span>🚀</span></button></div>
+</form><div class="mt-6 border-t border-slate-100 pt-4 text-xs text-slate-400 text-center">Materi: Pengetahuan Umum & SKU Pramuka Penggalang Ramu | Waktu: 10 Menit | 35 Soal Acak</div>
 </section>
 
-<section id="pageCountdown" class="hidden flex flex-col items-center justify-center py-20 bg-white rounded-xl shadow-lg border border-slate-200">
-    <h3 class="text-xl font-medium text-slate-600 mb-4">Ujian Akan Segera Dimulai Dalam</h3>
-    <div id="countdownNumber" class="text-8xl font-black text-emerald-700 animate-bounce">3</div>
-    <p class="text-slate-400 mt-4 text-sm">Persiapkan diri regu Anda, tetap tenang dan teliti!</p>
-</section>
+<section id="view-countdown" class="hidden text-center py-16"><div class="bg-white rounded-2xl p-8 exam-card max-w-md mx-auto">
+<h3 class="text-xl font-bold text-slate-700 mb-4">Ujian Akan Segera Dimulai!</h3><div id="countdown-number" class="text-7xl sm:text-9xl font-black text-emerald-700 my-8 animate-pulse-slow">3</div>
+<p class="text-slate-500 text-sm">Siapkan diri Anda, fokus dan teliti dalam menjawab soal.</p></div></section>
 
-<section id="pageExam" class="hidden grid grid-cols-1 md:grid-cols-4 gap-6">
-    <div class="md:col-span-1 bg-white p-4 rounded-xl shadow-md border border-slate-200 h-fit">
-        <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
-            <span class="text-xs font-bold text-slate-500 uppercase">Nomor Soal (35)</span>
-            <div id="timerBox" class="text-sm font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200">⏱️ <span id="timerDisplay">10:00</span></div>
-        </div>
-        <div id="questionNavigator" class="grid grid-cols-5 gap-1.5 max-h-60 overflow-y-auto p-1"></div>
-        <div class="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-500 space-y-1">
-            <div class="flex items-center gap-2"><span class="w-3 h-3 bg-emerald-600 rounded inline-block"></span> Terjawab</div>
-            <div class="flex items-center gap-2"><span class="w-3 h-3 bg-slate-200 rounded inline-block"></span> Belum</div>
-        </div>
-    </div>
+<section id="view-exam" class="hidden">
+<div class="bg-white rounded-xl p-4 mb-4 exam-card flex flex-col sm:flex-row justify-between items-center gap-3">
+<div class="flex items-center space-x-2"><span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Soal ke:</span>
+<span id="current-q-num" class="text-lg font-extrabold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">1</span><span class="text-xs text-slate-400">/ 35</span></div>
+<div id="timer-box" class="flex items-center space-x-2 bg-slate-100 px-4 py-2 rounded-xl border border-slate-300 transition-colors duration-300">
+<div id="timer-light" class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div><span class="text-xs font-semibold text-slate-600">Sisa Waktu:</span>
+<span id="timer-display" class="font-mono text-base font-bold text-slate-800">10:00</span></div></div>
+<div class="bg-white rounded-xl p-6 sm:p-8 exam-card mb-4"><div id="question-text" class="text-base sm:text-lg font-semibold text-slate-800 mb-6 leading-relaxed"></div><div id="options-container" class="space-y-3"></div></div>
+<div class="flex justify-between items-center bg-white rounded-xl p-4 exam-card">
+<button id="btn-prev" onclick="prevQuestion()" class="px-5 py-2.5 rounded-lg border border-slate-300 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition disabled:opacity-40 disabled:cursor-not-allowed">← Sebelumnya</button>
+<div id="question-nav-dots" class="hidden md:flex space-x-1"></div>
+<button id="btn-next" onclick="nextQuestion()" class="px-6 py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-sm shadow transition">Selanjutnya →</button>
+</div></section>
 
-    <div class="md:col-span-3 bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col justify-between">
-        <div>
-            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
-                <span id="questionCategory" class="text-xs font-semibold px-2.5 py-1 bg-blue-100 text-blue-800 rounded-full">SKU Ramu</span>
-                <span id="questionCounter" class="text-sm font-bold text-slate-500">Soal 1 dari 35</span>
-            </div>
-            <h3 id="questionText" class="text-base md:text-lg font-semibold text-slate-800 mb-6 leading-relaxed">Pertanyaan akan dimuat di sini...</h3>
-            <div id="optionsContainer" class="space-y-3"></div>
-        </div>
-        <div class="flex justify-between items-center mt-8 pt-4 border-t border-slate-100">
-            <button id="btnPrev" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium rounded-lg text-sm transition cursor-pointer disabled:opacity-50">← Sebelumnya</button>
-            <button id="btnNext" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-medium rounded-lg text-sm transition cursor-pointer">Selanjutnya →</button>
-            <button id="btnSubmit" class="hidden px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-sm shadow transition cursor-pointer z-20">Selesai & Kumpul Ujian 🏁</button>
-        </div>
-    </div>
-</section>
+<section id="view-result" class="hidden space-y-6">
+<div class="bg-white rounded-xl p-6 sm:p-8 exam-card text-center relative overflow-hidden">
+<div id="surprise-container" class="absolute inset-0 pointer-events-none"></div><div class="inline-block p-4 bg-emerald-100 text-emerald-800 rounded-full mb-3 text-3xl">🏆</div>
+<h2 class="text-2xl font-extrabold text-slate-800">Ujian Telah Selesai!</h2><p class="text-sm text-slate-500 mt-1">Berikut adalah hasil rekapitulasi nilai regu Anda.</p>
+<div class="my-4 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs sm:text-sm text-slate-700 flex flex-wrap justify-center gap-4">
+<div>Regu: <span id="res-disp-regu" class="font-bold text-emerald-800">-</span></div><div>•</div><div>Nama Peserta: <span id="res-disp-nama" class="font-bold text-emerald-800">-</span></div></div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 my-6">
+<div class="bg-slate-50 p-4 rounded-xl border border-slate-200"><div class="text-xs text-slate-500 font-medium">Total Nilai</div><div id="res-score" class="text-3xl font-black text-emerald-700 mt-1">0</div></div>
+<div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200"><div class="text-xs text-emerald-700 font-medium">Jawaban Benar</div><div id="res-correct" class="text-3xl font-black text-emerald-600 mt-1">0</div></div>
+<div class="bg-rose-50 p-4 rounded-xl border border-rose-200"><div class="text-xs text-rose-700 font-medium">Jawaban Salah</div><div id="res-wrong" class="text-3xl font-black text-rose-600 mt-1">0</div></div>
+<div class="bg-amber-50 p-4 rounded-xl border border-amber-200"><div class="text-xs text-amber-700 font-medium">Status Kelulusan</div><div id="res-status" class="text-lg font-bold text-amber-800 mt-2">Lulus</div></div></div>
+<div class="flex flex-col sm:flex-row justify-center gap-3 pt-2">
+<button onclick="sendToWhatsApp()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition flex items-center justify-center space-x-2 text-sm"><span>📱 Kirim Hasil ke WhatsApp Pembina</span></button>
+<button onclick="location.reload()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 px-6 rounded-lg transition text-sm">🔄 Ulangi Ujian</button></div></div>
+<div class="bg-white rounded-xl p-6 sm:p-8 exam-card"><h3 class="text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200 flex items-center justify-between"><span>Halaman Koreksi Jawaban</span><span class="text-xs font-normal text-slate-500">Tinjau kunci jawaban benar & pilihan Anda</span></h3><div id="correction-list" class="space-y-6"></div></div>
+</section></main>
 
-<section id="pageResult" class="hidden bg-white rounded-xl shadow-lg border border-slate-200 p-6 md:p-8">
-    <div class="text-center pb-6 border-b border-slate-200">
-        <div id="resultBadgeIcon" class="text-5xl mb-2">🏆</div>
-        <h2 class="text-2xl font-bold text-slate-800">Hasil Evaluasi Lomba PUPK</h2>
-        <p id="resultReguInfo" class="text-slate-600 font-medium mt-1">Regu: - | Peserta: -</p>
-        <div class="flex justify-center gap-6 mt-4">
-            <div class="bg-emerald-50 border border-emerald-200 px-5 py-3 rounded-xl">
-                <p class="text-xs text-emerald-700 font-semibold uppercase">Nilai Akhir</p>
-                <p id="finalScore" class="text-3xl font-black text-emerald-800">0</p>
-            </div>
-            <div class="bg-slate-50 border border-slate-200 px-5 py-3 rounded-xl">
-                <p class="text-xs text-slate-600 font-semibold uppercase">Jawaban Benar</p>
-                <p id="finalCorrect" class="text-3xl font-black text-slate-800">0 / 35</p>
-            </div>
-        </div>
-    </div>
-    <div class="mt-6">
-        <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><span>📋</span> Lembar Koreksi Kunci Jawaban Presisi</h3>
-        <p class="text-xs text-slate-500 mb-4">Tinjau jawaban regu Anda dibandingkan dengan kunci jawaban resmi di bawah ini agar tidak ada materi yang terlewat.</p>
-        <div id="correctionList" class="space-y-4"></div>
-    </div>
-    <div class="mt-8 pt-4 border-t border-slate-200 flex justify-center">
-        <button onclick="location.reload()" class="w-full sm:w-auto px-8 py-3 bg-slate-700 hover:bg-slate-800 text-white font-medium rounded-lg text-sm transition cursor-pointer shadow">🔄 Ulangi Simulasi Ujian</button>
-    </div>
-</section>
-</main>
+<div id="custom-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+<div class="bg-white rounded-2xl p-6 max-w-sm w-full exam-card text-center space-y-4"><div id="modal-icon" class="text-4xl">⚠️</div>
+<h4 id="modal-title" class="text-lg font-bold text-slate-800">Konfirmasi</h4><p id="modal-message" class="text-sm text-slate-600">Apakah Anda yakin ingin menyelesaikan ujian?</p>
+<div class="flex space-x-3 pt-2"><button id="modal-btn-cancel" onclick="closeModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2.5 rounded-lg text-sm transition">Batal</button>
+<button id="modal-btn-confirm" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-2.5 rounded-lg text-sm transition">Ya, Selesai</button></div></div></div>
+<footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500">Pramuka Penggalang • Kwarcab Kepulauan Seribu © 2026 | Ujian PUPK Berbasis Digital</footer>
 
-<footer class="text-center py-4 text-xs text-slate-500 bg-white border-t border-slate-200">
-    <p>Sistem Simulasi CBT Perkemahan SDN 02 Pagi • Dibuat khusus untuk Kegiatan Pramuka</p>
-</footer>
-
-<div id="confirmModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl border border-slate-200">
-        <div class="text-4xl mb-2">⚠️</div>
-        <h3 class="text-lg font-bold text-slate-800 mb-2">Konfirmasi Pengumpulan</h3>
-        <p id="confirmModalText" class="text-sm text-slate-600 mb-6">Apakah regu Anda yakin ingin menyelesaikan dan mengumpulkan jawaban ujian ini?</p>
-        <div class="flex gap-3">
-            <button id="btnModalCancel" class="flex-1 px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl text-sm transition cursor-pointer">Batal</button>
-            <button id="btnModalConfirm" class="flex-1 px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-xl text-sm transition cursor-pointer shadow">Ya, Kumpulkan</button>
-        </div>
-    </div>
-</div>
-
-<div id="surpriseModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl p-6 md:p-8 max-w-md text-center shadow-2xl border-4 border-emerald-500 relative overflow-hidden">
-        <div class="absolute -top-6 -left-6 text-6xl opacity-20">🎉</div>
-        <div class="absolute -bottom-6 -right-6 text-6xl opacity-20">🌟</div>
-        <div class="text-6xl mb-3 animate-bounce">🥇</div>
-        <h3 class="text-2xl font-extrabold text-emerald-800 mb-2">LUAR BIASA! SEMPURNA!</h3>
-        <p class="text-sm text-slate-600 mb-6">Peserta dan Regu Anda berhasil menjawab seluruh 35 soal dengan BENAR TANPA KESALAHAN! Prestasi yang sangat membanggakan!</p>
-        <button onclick="closeSurprise()" class="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl shadow-lg text-sm cursor-pointer transition">Tutup & Lihat Koreksi 🏆</button>
-    </div>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-/*
- * HOSTING NOTE:
- * This standalone file expects __firebase_config, __app_id, and optionally
- * __initial_auth_token to be injected by the hosting environment.
- * If they are unavailable, the exam still works locally, but scores won't
- * be saved to Firebase.
- */
-const firebaseConfigRaw = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
-let currentUser = null;
-let db = null;
-let appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-if (firebaseConfigRaw) {
-    try {
-        const firebaseConfig = typeof firebaseConfigRaw === 'string' ? JSON.parse(firebaseConfigRaw) : firebaseConfigRaw;
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        db = getFirestore(app);
-
-        async function initFirebaseAuth() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (err) {
-                console.error("Auth Error:", err);
-            }
-        }
-        initFirebaseAuth();
-        onAuthStateChanged(auth, (user) => { currentUser = user; });
-    } catch (err) {
-        console.error("Firebase initialization error:", err);
-    }
-}
-
+<script>
 const rawQuestions = [
-{cat:"SKU Ramu",q:"Apa warna dasar badge atau tanda tingkat golongan Penggalang dalam Gerakan Pramuka?",options:["Merah","Hijau","Kuning","Cokelat Tua"],ans:0},
-{cat:"SKU Ramu",q:"Sebutkan tingkatan urutan dalam golongan Pramuka Penggalang dari yang terendah!",options:["Ramu - Terap - Rakit","Rakit - Ramu - Terap","Ramu - Rakit - Terap","Terap - Rakit - Ramu"],ans:2},
-{cat:"SKU Ramu",q:"Salam Pramuka terdiri dari berapa macam cara pemberian salam?",options:["1 Macam","2 Macam","3 Macam","4 Macam"],ans:2},
-{cat:"SKU Ramu",q:"Bapak Pandu Sedunia (Lord Baden-Powell) lahir di negara mana?",options:["Amerika Serikat","Inggris","Prancis","Australia"],ans:1},
-{cat:"SKU Ramu",q:"Kepanjangan dari singkatan apakah Dasa Dharma Pramuka yang ke-8?",options:["Disiplin, berani dan setia","Bertanggung jawab dan dapat dipercaya","Hemat, cermat dan bersahaja","Rajin, terampil dan gembira"],ans:2},
-{cat:"SKU Ramu",q:"Sebutkan warna lambang Gerakan Pramuka (Tunas Kelapa) pada Panji Pramuka!",options:["Hijau dan Kuning","Putih dan Hijau","Cokelat","Hitam dan Putih"],ans:0},
-{cat:"SKU Ramu",q:"Buku panduan syarat kecakapan umum bagi anggota pramuka disebut dengan...",options:["SKK","SKU","TKU","TKK"],ans:1},
-{cat:"SKU Ramu",q:"Siapakah pencipta lagu hymne Satya Darma Pramuka?",options:["W.R. Supratman","H. Mutahar","Sri Widodo","Ibu Sud"],ans:1},
-{cat:"SKU Ramu",q:"Dalam struktur organisasi regu penggalang, pimpinan regu disebut dengan...",options:["Pratama","Pinru","Wakil Pinru","Pradana"],ans:1},
-{cat:"SKU Ramu",q:"Hari Pramuka diperingati setiap tanggal berapa setiap tahunnya di Indonesia?",options:["20 Mei","1 Juni","14 Agustus","28 Oktober"],ans:2},
-{cat:"SKU Ramu",q:"Simpul yang digunakan untuk menyambung dua utas tali yang sama besar dan tidak licin adalah...",options:["Simpul mati","Simpul pangkal","Simpul jangkar","Simpul hidup"],ans:0},
-{cat:"SKU Ramu",q:"Motto Gerakan Pramuka adalah...",options:["Satyaku Kudharmakan Dharmaku Kubaktikan","Ing Ngarsa Sung Tuladha","Bhinneka Tunggal Ika","Selalu Siap Sedia"],ans:0},
-{cat:"Pengetahuan Umum",q:"Apakah ibu kota negara Republik Indonesia saat ini?",options:["Surabaya","Jakarta","Bandung","Medan"],ans:1},
-{cat:"Pengetahuan Umum",q:"Alat pernapasan pada tumbuhan yang terletak di bagian daun disebut...",options:["Stomata","Xilem","Floem","Klorofil"],ans:0},
-{cat:"Pengetahuan Umum",q:"Planet di tata surya kita yang dijuluki sebagai 'Planet Merah' adalah...",options:["Venus","Jupiter","Mars","Saturnus"],ans:2},
-{cat:"Pengetahuan Umum",q:"Peristiwa perubahan wujud benda dari padat langsung menjadi gas disebut...",options:["Mencair","Menguap","Menyublim","Mengembun"],ans:2},
-{cat:"Pengetahuan Umum",q:"Siapakah pencipta lagu kebangsaan Indonesia Raya?",options:["Ibu Sud","W.R. Supratman","C. Simanjuntak","Ismail Marzuki"],ans:1},
-{cat:"Pengetahuan Umum",q:"Sumpah Pemuda diikrarkan pada tanggal berapa?",options:["17 Agustus 1945","20 Mei 1908","28 Oktober 1928","1 Juni 1945"],ans:2},
-{cat:"Pengetahuan Umum",q:"Organ pencernaan manusia tempat terjadinya penyerapan sari-sari makanan adalah...",options:["Lambung","Usus besar","Usus halus","Kerongkongan"],ans:2},
-{cat:"Pengetahuan Umum",q:"Candi Borobudur yang merupakan candi Buddha terbesar di dunia terletak di provinsi...",options:["Jawa Timur","Jawa Tengah","DI Yogyakarta","Jawa Barat"],ans:1},
-{cat:"Pengetahuan Umum",q:"Alat musik tradisional Angklung berasal dari provinsi...",options:["Jawa Barat","Jawa Tengah","Bali","Sumatera Barat"],ans:0},
-{cat:"Pengetahuan Umum",q:"Hewan yang dapat hidup di darat dan di air (dua alam) disebut dengan hewan...",options:["Karnivora","Amfibi","Reptil","Mamalia"],ans:1},
-{cat:"Pengetahuan Umum",q:"Tokoh yang membacakan teks Proklamasi Kemerdekaan Republik Indonesia adalah...",options:["Moh. Hatta","Ir. Soekarno","Ahmad Soebardjo","Sutan Sjahrir"],ans:1},
-{cat:"Pengetahuan Umum",q:"Garis khayal yang membagi bumi menjadi belahan bumi utara dan selatan disebut...",options:["Garis Bujur","Garis Meridian","Garis Khatulistiwa (Equator)","Garis Waktu"],ans:2},
-{cat:"Pengetahuan Umum",q:"Lapis pelindung bumi dari sinar ultraviolet matahari di atmosfer adalah lapisan...",options:["Troposfer","Ozon","Stratosfer","Ionosfer"],ans:1},
-{cat:"Kepramukaan",q:"Pramuka merupakan singkatan dari kata apakah?",options:["Praja Muda Karana","Prajurit Muda Berkarya","Pandu Remaja Mandiri Kreatif","Praja Muda Berkarya"],ans:0},
-{cat:"Kepramukaan",q:"Siapakah penemu kode sandi telegraf/morse yang sering digunakan dalam kepramukaan?",options:["Alexander Graham Bell","Samuel Morse","Thomas Edison","Guglielmo Marconi"],ans:1},
-{cat:"Kepramukaan",q:"Kain bendera semaphore standar berbentuk bangun datar apa?",options:["Persegi panjang","Segitiga sama kaki","Lingkaran","Trapesium"],ans:1},
-{cat:"Kepramukaan",q:"Keahlian membuat jembatan darurat, menara pengawas, dan perkemahan menggunakan tongkat dan tali disebut...",options:["Pionering (Perikatan)","P3K","Sandi dan Morse","Survival"],ans:0},
-{cat:"Kepramukaan",q:"Siapakah tokoh perempuan pendiri gerakan kepanduan putri dunia (Girl Guides)?",options:["Lady Baden-Powell","Agnes Baden-Powell","Olave Baden-Powell","Florence Nightingale"],ans:1},
-{cat:"Kepramukaan",q:"Perkemahan besar tingkat penggalang nasional di Indonesia diselenggarakan setiap 5 tahun sekali yang dinamakan...",options:["Perkemahan Wirakarya","Jambore Nasional (Jamnas)","Raimuna Nasional","Gelar S1 Pramuka"],ans:1},
-{cat:"Kepramukaan",q:"Kepanjangan dari Kwartir Cabang (Kwarcab) dalam struktur Gerakan Pramuka berada di tingkat wilayah...",options:["Kecamatan","Kabupaten / Kota","Provinsi","Nasional"],ans:1},
-{cat:"Kepramukaan",q:"Di manakah letak Bumi Perkemahan Pramuka (Buperta) utama nasional di Indonesia?",options:["Cibubur, Jakarta Timur","Cisarua, Bogor","Lembang, Bandung","Puncak, Bogor"],ans:0},
-{cat:"Kepramukaan",q:"Tanda Kecakapan Umum (TKU) untuk golongan penggalang berbentuk bangun apa?",options:["Jajar genjang","Lingkaran","Trapesium atau huruf V terbalik","Persegi panjang"],ans:2},
-{cat:"Kepramukaan",q:"Dalam kepanduan, janji yang diucapkan oleh seorang Pramuka Penggalang disebut...",options:["Dasa Dharma","Trisatya","Pancasila","Sapta Marga"],ans:1}
+{q:"Apa warna dasar Tanda Pengenal atau Badge untuk tingkat Pramuka Penggalang?",options:["Hijau","Merah","Kuning","Cokelat Tua"],answer:1,explanation:"Tingkatan Penggalang diidentifikasi dengan warna dasar merah (Ramu, Rakit, Terap)."},
+{q:"Tingkatan dalam golongan Pramuka Penggalang secara berurutan dari tingkat dasar hingga tertinggi adalah...",options:["Siaga - Penggalang - Penegak","Ramu - Rakit - Terap","Purwa - Madya - Utama","Mula - Bantu - Tata"],answer:1,explanation:"Tingkatan Penggalang terdiri atas Penggalang Ramu, Penggalang Rakit, dan Penggalang Terap."},
+{q:"Apa sebutan bagi Pemimpin Regu Utama (Pemimpin dari seluruh regu dalam satu pasukan penggalang)?",options:["Pratama","Pinru","Pradana","Yadarma"],answer:0,explanation:"Pratama adalah pemimpin tertinggi para pemimpin regu (Pinru) dalam pasukan penggalang."},
+{q:"Bapak Pandu Sedunia (Lord Baden-Powell) lahir di London pada tanggal berapakah?",options:["21 April 1879","14 Agustus 1908","22 Februari 1857","25 November 1912"],answer:2,explanation:"Lord Robert Baden-Powell lahir di London pada tanggal 22 Februari 1857."},
+{q:"Salam Pramuka yang diberikan dengan mengangkat tangan kanan, siku membentuk sudut 90 derajat, dan jari rapat di pelipis disebut...",options:["Salam Janji","Salam Kehormatan","Salam Biasa / Salam Pramuka","Salam Kemerdekaan"],answer:2,explanation:"Salam Pramuka (salam biasa) diberikan saat berpapasan atau menghormat dalam kegiatan kepramukaan."},
+{q:"Lambang Gerakan Pramuka di Indonesia yang diciptakan oleh Soenardjo Atmodipoerwo adalah...",options:["Tunas Kelapa","Burung Garuda","Bintang Emas","Padi dan Kapas"],answer:0,explanation:"Tunas kelapa resmi ditetapkan sebagai Lambang Gerakan Pramuka melalui Keppres No. 238 Tahun 1961."},
+{q:"Berapa jumlah ketentuan moral yang tercantum dalam Dasa Darma Pramuka?",options:["5 ketentuan","8 ketentuan","10 ketentuan","12 ketentuan"],answer:2,explanation:"Dasa Darma Pramuka terdiri dari 10 (dasa) butir ketentuan moral bagi anggota pramuka."},
+{q:"Tri Satya bagi Pramuka Penggalang diawali dengan kalimat...",options:["Demi kehormatanku aku berjanji...","Bersumpah setia kepada nusa dan bangsa...","Menjalankan kewajibanku terhadap Tuhan...","Pancasila dasar negara..."],answer:0,explanation:"Naskah Tri Satya dimulai dengan kalimat 'Demi kehormatanku aku berjanji akan bersungguh-sungguh...'"},
+{q:"Apakah kepanjangan dari singkatan SKU dalam sistem pendidikan kepramukaan?",options:["Syarat Kecakapan Utama","Syarat-Syarat Kecakapan Umum","Sistem Kwartir Umum","Satuan Karya Utama"],answer:1,explanation:"SKU adalah singkatan dari Syarat-Syarat Kecakapan Umum yang wajib diselesaikan oleh setiap anggota."},
+{q:"Siapakah tokoh penemu sandi/isyarat morse yang lambangnya dipelajari dalam kepramukaan?",options:["Alexander Graham Bell","Samuel Morse","Guglielmo Marconi","Thomas Alva Edison"],answer:1,explanation:"Samuel Morse adalah penemu sandi titik dan garis (Morse) yang digunakan dalam komunikasi telekomunikasi dan kepramukaan."},
+{q:"Dalam upacara pasukan penggalang, bentuk barisan yang lazim digunakan adalah...",options:["Barisan bersaf","Bentuk lingkaran","Bentuk angkare (setengah lingkaran)","Bentuk segitiga"],answer:2,explanation:"Pasukan penggalang membentuk formasi angkare (huruf U / setengah lingkaran) saat upacara."},
+{q:"Apa arti kiasan dari warna merah pada bendera Gerakan Pramuka?",options:["Kesucian","Berani","Kebenaran dan kesetiaan","Kemakmuran"],answer:1,explanation:"Warna merah pada bendera melambangkan keberanian, sedangkan putih melambangkan kesucian."},
+{q:"Berapakah jumlah ideal anggota dalam satu satuan Regu Pramuka Penggalang?",options:["4 - 5 orang","6 - 8 orang","10 - 12 orang","15 orang"],answer:1,explanation:"Satu regu penggalang idealnya beranggotakan 6 sampai 8 orang anak."},
+{q:"Buku panduan resmi yang berisi materi SKU, SKK, dan SPG disebut...",options:["Buku Saku Pramuka","AD / ART Gerakan Pramuka","Undang-Undang Kepramukaan","Keputusan Kwartir Nasional"],answer:0,explanation:"Buku saku dan buku SKU menjadi pedoman harian bagi anggota dalam menempuh kecakapan."},
+{q:"Simpul yang digunakan untuk menyambung dua utas tali yang sama besar dan kering adalah...",options:["Simpul Mati","Simpul Pangkal","Simpul Hidup","Simpul Jangkar"],answer:0,explanation:"Simpul mati digunakan untuk menyambung dua utas tali yang sama besar dan tidak licin."},
+{q:"Ikatan yang digunakan untuk mengikat dua buah tiang yang bersilangan tegak lurus adalah...",options:["Ikatan Palang","Ikatan Silang","Ikatan Kaki Tiga","Ikatan Canggah"],answer:0,explanation:"Ikatan palang (square lashing) digunakan untuk mengikat dua tongkat/tiang bersilangan."},
+{q:"Arah mata angin pada kompas yang menunjukan sudut 180 derajat adalah...",options:["Timur","Selatan","Barat","Utara"],answer:1,explanation:"Selatan menempati sudut 180° pada pembagian derajat kompas orientasi."},
+{q:"Siapakah nama istri dari Bapak Pandu Sedunia Lord Baden-Powell yang juga aktif memimpin kepanduan puteri?",options:["Lady Olave Baden-Powell","Agnes Baden-Powell","Queen Victoria","Margaret Thatcher"],answer:0,explanation:"Lady Olave Baden-Powell adalah Chief Guide yang mendampingi gerakan kepanduan dunia."},
+{q:"Hari Pramuka Nasional diperingati setiap tahun pada tanggal...",options:["20 Mei","1 Juni","14 Agustus","28 Oktober"],answer:2,explanation:"Hari Pramuka diperingati setiap tanggal 14 Agustus merujuk pada penganugerahan panji pramuka tahun 1961."},
+{q:"Salam yang digunakan ketika anggota pramuka sedang dalam acara resmi kenegaraan atau baris-berbaris formal adalah...",options:["Salam Janji","Salam Kehormatan","Salam Biasa","Salam Pramuka"],answer:1,explanation:"Salam kehormatan diberikan kepada bendera kebangsaan, jenazah, atau pejabat berwenang dalam upacara resmi."},
+{q:"Siapakah nama Presiden dan Wakil Presiden Republik Indonesia yang dilantik pada tahun 2024?",options:["Joko Widodo & Ma'ruf Amin","Prabowo Subianto & Gibran Rakabuming Raka","Susilo Bambang Yudhoyono & Boediono","Anies Baswedan & Muhaimin Iskandar"],answer:1,explanation:"Prabowo Subianto dan Gibran Rakabuming Raka dilantik sebagai Presiden dan Wakil Presiden RI periode 2024–2029."},
+{q:"Kabupaten Administrasi Kepulauan Seribu secara administratif merupakan bagian dari provinsi...",options:["Provinsi Banten","Provinsi Lampung","Provinsi Daerah Khusus Jakarta","Provinsi Jawa Barat"],answer:2,explanation:"Kepulauan Seribu adalah salah satu kabupaten administrasi di bawah Provinsi Daerah Khusus Jakarta."},
+{q:"Apakah nama ibukota negara Indonesia yang saat ini sedang dalam tahap pembangunan transisi sesuai undang-undang terbaru?",options:["Jakarta","Bandung","Nusantara (IKN)","Surabaya"],answer:2,explanation:"Ibu Kota Nusantara (IKN) yang terletak di Kalimantan Timur ditetapkan sebagai ibukota negara baru."},
+{q:"Dasar negara Republik Indonesia yang tercantum dalam Pembukaan UUD 1945 alinea ke-4 adalah...",options:["Pancasila","Bhinneka Tunggal Ika","UUD 1945","Garuda Pancasila"],answer:0,explanation:"Pancasila adalah dasar dan ideologi negara Republik Indonesia."},
+{q:"Semboyan negara Indonesia yang tertulis pada kaki lambang burung Garuda adalah...",options:["Tut Wuri Handayani","Bhinneka Tunggal Ika","Kartika Eka Paksi","Jalesveva Jayamahe"],answer:1,explanation:"Bhinneka Tunggal Ika berarti berbeda-beda tetapi tetap satu jua."},
+{q:"Pulau terbesar yang sepenuhnya berada di dalam wilayah kedaulatan negara Republik Indonesia adalah...",options:["Pulau Kalimantan","Pulau Sumatra","Pulau Jawa","Pulau Sulawesi"],answer:1,explanation:"Sumatra adalah pulau terbesar yang sepenuhnya milik Indonesia (Kalimantan dan Papua wilayahnya dibagi dengan negara tetangga)."},
+{q:"Garis khayal yang membagi wilayah flora dan fauna Indonesia bagian barat dan tengah disebut...",options:["Garis Wallace","Garis Weber","Garis Khatulistiwa","Garis Meridian"],answer:0,explanation:"Garis Wallace adalah garis batas zoogeografi yang memisahkan wilayah fauna Asia dan Australasia di Indonesia."},
+{q:"Lagu kebangsaan Republik Indonesia Raya diciptakan oleh...",options:["W.R. Supratman","Ismail Marzuki","Ibu Sud","C. Simanjuntak"],answer:0,explanation:"Wage Rudolf Supratman adalah pencipta lagu kebangsaan Indonesia Raya."},
+{q:"Tahun berapakah Proklamasi Kemerdekaan Republik Indonesia dikumandangkan?",options:["1942","1945","1950","1908"],answer:1,explanation:"Proklamasi Kemerdekaan Republik Indonesia dikumandangkan pada tanggal 17 Agustus 1945."},
+{q:"Siapakah tokoh yang menjahit Bendera Pusaka Sang Saka Merah Putih pada saat Proklamasi 1945?",options:["Fatmawati","R.A. Kartini","Cut Nyak Dien","Dewi Sartika"],answer:0,explanation:"Ibu Fatmawati Soekarno menjahit bendera pusaka sang saka merah putih."},
+{q:"Danau vulkanik terbesar di Indonesia yang terletak di Provinsi Sumatra Utara adalah...",options:["Danau Singkarak","Danau Toba","Danau Maninjau","Danau Poso"],answer:1,explanation:"Danau Toba adalah danau vulkanik terbesar di Indonesia sekaligus kaldera supervulkan dunia."},
+{q:"Mata uang resmi yang digunakan di negara Republik Indonesia adalah...",options:["Ringgit","Peso","Rupiah","Baht"],answer:2,explanation:"Rupiah (IDR) adalah mata uang resmi negara Republik Indonesia."},
+{q:"Berapakah jumlah provinsi di Indonesia saat ini setelah pemekaran wilayah di Papua?",options:["34 provinsi","38 provinsi","33 provinsi","37 provinsi"],answer:1,explanation:"Indonesia saat ini memiliki 38 provinsi setelah penambahan daerah otonomi baru di Papua."},
+{q:"Gunung tertinggi di Indonesia yang terkenal dengan puncak salju abadi di Papua adalah...",options:["Gunung Kerinci","Gunung Rinjani","Puncak Jaya / Carstensz Pyramid","Gunung Semeru"],answer:2,explanation:"Puncak Jaya di Pegunungan Jayawijaya Papua adalah gunung tertinggi di Indonesia."},
+{q:"Badan atau lembaga perwakilan rakyat pembuat undang-undang di Indonesia bersama Presiden adalah...",options:["MPR RI","DPR RI","DPD RI","MK RI"],answer:1,explanation:"Dewan Perwakilan Rakyat (DPR) memegang kekuasaan membentuk undang-undang bersama Presiden."}
 ];
 
-let questions=[], currentIdx=0, userAnswers={}, timerInterval=null, timeLeft=600;
-let reguInfo={reguName:"",pesertaName:""};
+let state={regu:"",nama:"",questions:[],currentIndex:0,answers:{},timeLeft:600,timerInterval:null,isFinished:false};
+const viewReg=document.getElementById('view-reg'),viewCountdown=document.getElementById('view-countdown'),viewExam=document.getElementById('view-exam'),viewResult=document.getElementById('view-result');
+const formReg=document.getElementById('form-reg'),inputRegu=document.getElementById('input-regu'),inputNama=document.getElementById('input-nama'),headerUserInfo=document.getElementById('header-user-info'),dispRegu=document.getElementById('disp-regu'),dispNama=document.getElementById('disp-nama');
 
-const pageRegister=document.getElementById("pageRegister");
-const pageCountdown=document.getElementById("pageCountdown");
-const pageExam=document.getElementById("pageExam");
-const pageResult=document.getElementById("pageResult");
-const formRegister=document.getElementById("formRegister");
-const countdownNumber=document.getElementById("countdownNumber");
-const userInfoHeader=document.getElementById("userInfoHeader");
-const displayRegu=document.getElementById("displayRegu");
-const displayPeserta=document.getElementById("displayPeserta");
-const questionCategory=document.getElementById("questionCategory");
-const questionCounter=document.getElementById("questionCounter");
-const questionText=document.getElementById("questionText");
-const optionsContainer=document.getElementById("optionsContainer");
-const questionNavigator=document.getElementById("questionNavigator");
-const btnPrev=document.getElementById("btnPrev");
-const btnNext=document.getElementById("btnNext");
-const btnSubmit=document.getElementById("btnSubmit");
-const timerDisplay=document.getElementById("timerDisplay");
-const timerBox=document.getElementById("timerBox");
-const surpriseModal=document.getElementById("surpriseModal");
-const confirmModal=document.getElementById("confirmModal");
-const confirmModalText=document.getElementById("confirmModalText");
-const btnModalCancel=document.getElementById("btnModalCancel");
-const btnModalConfirm=document.getElementById("btnModalConfirm");
+formReg.addEventListener('submit',function(e){e.preventDefault();const regu=inputRegu.value.trim(),nama=inputNama.value.trim();if(!regu||!nama)return;
+state.regu=regu;state.nama=nama;let shuffled=[...rawQuestions];for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}state.questions=shuffled;state.answers={};state.currentIndex=0;state.timeLeft=600;state.isFinished=false;
+dispRegu.textContent=regu;dispNama.textContent=nama;headerUserInfo.classList.remove('hidden');viewReg.classList.add('hidden');viewCountdown.classList.remove('hidden');startCountdownSequence();});
 
-formRegister.addEventListener("submit",e=>{
-    e.preventDefault();
-    reguInfo.reguName=document.getElementById("reguName").value.trim();
-    reguInfo.pesertaName=document.getElementById("pesertaName").value.trim();
-    if(!reguInfo.reguName||!reguInfo.pesertaName)return;
-    questions=[...rawQuestions].sort(()=>Math.random()-0.5);
-    displayRegu.textContent=reguInfo.reguName;
-    displayPeserta.textContent=reguInfo.pesertaName;
-    userInfoHeader.classList.remove("hidden");
-    pageRegister.classList.add("hidden");
-    pageCountdown.classList.remove("hidden");
-    let count=3;
-    countdownNumber.textContent=count;
-    const cdInterval=setInterval(()=>{
-        count--;
-        if(count>0) countdownNumber.textContent=count;
-        else if(count===0) countdownNumber.textContent="MULAI!";
-        else{
-            clearInterval(cdInterval);
-            pageCountdown.classList.add("hidden");
-            pageExam.classList.remove("hidden");
-            startExam();
-        }
-    },1000);
-});
-
-function startExam(){
-    renderQuestion();
-    renderNavigator();
-    timerInterval=setInterval(()=>{
-        timeLeft--;
-        const m=Math.floor(timeLeft/60),s=timeLeft%60;
-        timerDisplay.textContent=`${m.toString().padStart(2,"0")}:${s.toString().padStart(2,"0")}`;
-        if(timeLeft<=180&&timeLeft>0)timerBox.classList.add("blink-red");
-        if(timeLeft<=0){
-            clearInterval(timerInterval);
-            showCustomAlert("Waktu ujian telah habis!");
-            submitExam();
-        }
-    },1000);
-}
-
-function renderQuestion(){
-    const q=questions[currentIdx];
-    questionCategory.textContent=q.cat;
-    questionCounter.textContent=`Soal ${currentIdx+1} dari ${questions.length}`;
-    questionText.textContent=q.q;
-    optionsContainer.innerHTML="";
-    q.options.forEach((opt,idx)=>{
-        const isSelected=userAnswers[currentIdx]===idx;
-        const card=document.createElement("label");
-        card.className=`option-card flex items-center p-3.5 rounded-xl border cursor-pointer select-none ${isSelected?"border-emerald-600 bg-emerald-50/90 font-semibold text-emerald-900 shadow-sm ring-1 ring-emerald-600":"border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700"}`;
-        card.innerHTML=`<input type="radio" name="currentOption" value="${idx}" ${isSelected?"checked":""} class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 mr-3 cursor-pointer"><span class="text-sm md:text-base">${String.fromCharCode(65+idx)}. ${opt}</span>`;
-        card.addEventListener("click",()=>{
-            userAnswers[currentIdx]=idx;
-            renderNavigator();
-            const cards=optionsContainer.querySelectorAll(".option-card");
-            cards.forEach((c,i)=>{
-                c.className=`option-card flex items-center p-3.5 rounded-xl border cursor-pointer select-none ${i===idx?"border-emerald-600 bg-emerald-50/90 font-semibold text-emerald-900 shadow-sm ring-1 ring-emerald-600":"border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700"}`;
-                c.querySelector("input").checked=i===idx;
-            });
-        });
-        optionsContainer.appendChild(card);
-    });
-    btnPrev.disabled=currentIdx===0;
-    if(currentIdx===questions.length-1){
-        btnNext.classList.add("hidden");
-        btnSubmit.classList.remove("hidden");
-    }else{
-        btnNext.classList.remove("hidden");
-        btnSubmit.classList.add("hidden");
-    }
-}
-
-function renderNavigator(){
-    questionNavigator.innerHTML="";
-    questions.forEach((_,idx)=>{
-        const answered=userAnswers[idx]!==undefined,current=idx===currentIdx;
-        const b=document.createElement("button");
-        b.textContent=idx+1;
-        b.className=`nav-btn h-9 rounded-lg font-bold text-xs cursor-pointer flex items-center justify-center border ${current?"ring-2 ring-emerald-800 border-emerald-800 bg-emerald-100 text-emerald-900 scale-105":answered?"bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700":"bg-slate-100 text-slate-600 border-slate-300 hover:bg-slate-200"}`;
-        b.onclick=()=>{currentIdx=idx;renderQuestion();renderNavigator()};
-        questionNavigator.appendChild(b);
-    });
-}
-
-btnPrev.addEventListener("click",()=>{
-    if(currentIdx>0){currentIdx--;renderQuestion();renderNavigator()}
-});
-btnNext.addEventListener("click",()=>{
-    if(currentIdx<questions.length-1){currentIdx++;renderQuestion();renderNavigator()}
-});
-btnSubmit.addEventListener("click",e=>{
-    e.preventDefault();
-    let unanswered=0;
-    for(let i=0;i<questions.length;i++)if(userAnswers[i]===undefined)unanswered++;
-    confirmModalText.textContent=unanswered>0?`Masih ada ${unanswered} soal yang belum dijawab. Apakah regu Anda yakin ingin mengumpulkan ujian ini?`:"Semua 35 soal telah dijawab. Apakah yakin ingin menyelesaikan dan mengumpulkan jawaban ujian ini?";
-    confirmModal.classList.remove("hidden");
-});
-btnModalCancel.addEventListener("click",()=>confirmModal.classList.add("hidden"));
-btnModalConfirm.addEventListener("click",()=>{
-    confirmModal.classList.add("hidden");
-    submitExam();
-});
-
-function showCustomAlert(msg){
-    confirmModalText.textContent=msg;
-    btnModalCancel.classList.add("hidden");
-    confirmModal.classList.remove("hidden");
-    btnModalConfirm.onclick=()=>{
-        confirmModal.classList.add("hidden");
-        btnModalCancel.classList.remove("hidden");
-        btnModalConfirm.onclick=()=>{confirmModal.classList.add("hidden");submitExam()};
-    };
-}
-
-async function submitExam(){
-    if(timerInterval)clearInterval(timerInterval);
-    pageExam.classList.add("hidden");
-    pageResult.classList.remove("hidden");
-    window.scrollTo({top:0,behavior:"smooth"});
-    let correctCount=0;
-    questions.forEach((q,idx)=>{if(userAnswers[idx]===q.ans)correctCount++});
-    const score=Math.round((correctCount/questions.length)*100);
-    document.getElementById("finalScore").textContent=score;
-    document.getElementById("finalCorrect").textContent=`${correctCount} / ${questions.length}`;
-    document.getElementById("resultReguInfo").textContent=`Regu: ${reguInfo.reguName} | Peserta: ${reguInfo.pesertaName}`;
-
-    if(currentUser&&db){
-        try{
-            const now=new Date();
-            await addDoc(collection(db,"artifacts",appId,"public","data","pupk_scores_v3"),{
-                reguName:reguInfo.reguName,pesertaName:reguInfo.pesertaName,score,correct:correctCount,total:questions.length,
-                timestamp:now.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit",second:"2-digit"})+" "+now.toLocaleDateString("id-ID")
-            });
-        }catch(e){console.error("Gagal menyimpan ke cloud:",e)}
-    }
-
-    if(correctCount===questions.length){
-        document.getElementById("resultBadgeIcon").textContent="🌟🥇🌟";
-        setTimeout(()=>surpriseModal.classList.remove("hidden"),500);
-    }
-
-    const list=document.getElementById("correctionList");
-    list.innerHTML="";
-    questions.forEach((q,idx)=>{
-        const userAnsIdx=userAnswers[idx],isCorrect=userAnsIdx===q.ans;
-        const userAnsText=userAnsIdx!==undefined?`${String.fromCharCode(65+userAnsIdx)}. ${q.options[userAnsIdx]}`:'<span class="text-rose-500 italic">Tidak Dijawab</span>';
-        const correctAnsText=`${String.fromCharCode(65+q.ans)}. ${q.options[q.ans]}`;
-        const item=document.createElement("div");
-        item.className=`p-4 rounded-xl border ${isCorrect?"bg-emerald-50/50 border-emerald-200":"bg-rose-50/50 border-rose-200"}`;
-        item.innerHTML=`<div class="flex items-start justify-between gap-2 mb-2"><span class="text-xs font-bold px-2 py-0.5 rounded ${isCorrect?"bg-emerald-200 text-emerald-900":"bg-rose-200 text-rose-900"}">Soal #${idx+1} • ${q.cat}</span><span class="text-sm font-bold ${isCorrect?"text-emerald-700":"text-rose-700"}">${isCorrect?"✅ BENAR":"❌ SALAH"}</span></div><p class="text-sm font-semibold text-slate-800 mb-2">${q.q}</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs"><div class="p-2.5 rounded-lg bg-white border border-slate-200"><span class="block text-slate-400 font-medium">Jawaban Regu Anda:</span><span class="font-medium ${isCorrect?"text-emerald-700":"text-rose-700"}">${userAnsText}</span></div><div class="p-2.5 rounded-lg bg-white border border-slate-200"><span class="block text-slate-400 font-medium">Kunci Jawaban Benar:</span><span class="font-bold text-emerald-800">${correctAnsText}</span></div></div>`;
-        list.appendChild(item);
-    });
-}
-window.closeSurprise=()=>surpriseModal.classList.add("hidden");
+function startCountdownSequence(){let count=3;const numEl=document.getElementById('countdown-number');numEl.textContent=count;const interval=setInterval(()=>{count--;if(count>0)numEl.textContent=count;else if(count===0)numEl.textContent="MULAI!";else{clearInterval(interval);viewCountdown.classList.add('hidden');viewExam.classList.remove('hidden');startExamTimer();renderQuestion();}},1000);}
+function startExamTimer(){const timerDisplay=document.getElementById('timer-display'),timerBox=document.getElementById('timer-box'),timerLight=document.getElementById('timer-light');state.timerInterval=setInterval(()=>{state.timeLeft--;let mins=Math.floor(state.timeLeft/60),secs=state.timeLeft%60;timerDisplay.textContent=`${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;if(state.timeLeft<=180){timerBox.classList.remove('bg-slate-100','border-slate-300');timerBox.classList.add('bg-rose-50','border-rose-400');timerLight.classList.remove('bg-emerald-500');timerLight.classList.add('bg-rose-600','animate-ping');}if(state.timeLeft<=0){clearInterval(state.timerInterval);finishExam(true);}},1000);}
+function renderQuestion(){const qNum=document.getElementById('current-q-num'),qText=document.getElementById('question-text'),optContainer=document.getElementById('options-container'),btnPrev=document.getElementById('btn-prev'),btnNext=document.getElementById('btn-next');qNum.textContent=state.currentIndex+1;const currentQ=state.questions[state.currentIndex];qText.textContent=`${state.currentIndex+1}. ${currentQ.q}`;optContainer.innerHTML='';
+currentQ.options.forEach((opt,idx)=>{const isSelected=state.answers[state.currentIndex]===idx;const optionCard=document.createElement('label');optionCard.className=`flex items-center p-4 rounded-xl border cursor-pointer transition-all ${isSelected?'border-emerald-600 bg-emerald-50/70 text-emerald-950 font-medium shadow-sm':'border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'}`;optionCard.innerHTML=`<input type="radio" name="exam-option" value="${idx}" ${isSelected?'checked':''} class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-slate-300"><span class="ml-3 text-sm sm:text-base">${String.fromCharCode(65+idx)}. ${opt}</span>`;optionCard.querySelector('input').addEventListener('change',()=>{state.answers[state.currentIndex]=idx;renderQuestion();});optContainer.appendChild(optionCard);});
+btnPrev.disabled=state.currentIndex===0;if(state.currentIndex===state.questions.length-1){btnNext.textContent="Selesai & Kumpulkan 🏁";btnNext.className="px-6 py-2.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm shadow transition";}else{btnNext.textContent="Selanjutnya →";btnNext.className="px-6 py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-sm shadow transition";}}
+function prevQuestion(){if(state.currentIndex>0){state.currentIndex--;renderQuestion();}}
+function nextQuestion(){if(state.currentIndex<state.questions.length-1){state.currentIndex++;renderQuestion();}else{showModal("Konfirmasi Ujian","Apakah Anda yakin ingin mengakhiri dan mengumpulkan jawaban ujian?",()=>finishExam(false));}}
+function finishExam(isTimeout){if(state.isFinished)return;state.isFinished=true;clearInterval(state.timerInterval);viewExam.classList.add('hidden');viewResult.classList.remove('hidden');document.getElementById('res-disp-regu').textContent=state.regu;document.getElementById('res-disp-nama').textContent=state.nama;let correctCount=0,wrongCount=0;state.questions.forEach((q,idx)=>{if(state.answers[idx]===q.answer)correctCount++;else wrongCount++;});const score=Math.round(correctCount/state.questions.length*100);document.getElementById('res-score').textContent=score;document.getElementById('res-correct').textContent=correctCount;document.getElementById('res-wrong').textContent=wrongCount;const statusEl=document.getElementById('res-status');if(score>=75){statusEl.textContent="LULUS (Sangat Baik)";statusEl.className="text-sm font-bold text-emerald-700 mt-2";}else if(score>=60){statusEl.textContent="LULUS (Cukup)";statusEl.className="text-sm font-bold text-amber-700 mt-2";}else{statusEl.textContent="REMEDIAL";statusEl.className="text-sm font-bold text-rose-700 mt-2";}if(score===100)triggerSurprise();renderCorrectionList();}
+function renderCorrectionList(){const listContainer=document.getElementById('correction-list');listContainer.innerHTML='';state.questions.forEach((q,idx)=>{const userAns=state.answers[idx],isCorrect=userAns===q.answer,item=document.createElement('div');item.className=`p-4 rounded-xl border ${isCorrect?'border-emerald-200 bg-emerald-50/40':'border-rose-200 bg-rose-50/40'}`;let userAnsText=userAns!==undefined?`${String.fromCharCode(65+userAns)}. ${q.options[userAns]}`:'<span class="italic text-slate-400">Tidak dijawab</span>',correctAnsText=`${String.fromCharCode(65+q.answer)}. ${q.options[q.answer]}`;item.innerHTML=`<div class="flex items-start justify-between gap-2 mb-2"><span class="text-xs font-bold px-2.5 py-1 rounded-md ${isCorrect?'bg-emerald-600 text-white':'bg-rose-600 text-white'}">Soal #${idx+1} ${isCorrect?'✔ BENAR':'❌ SALAH'}</span></div><p class="text-sm font-semibold text-slate-800 mb-3">${q.q}</p><div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs mb-3"><div class="p-2.5 rounded-lg bg-white border border-slate-200"><span class="block text-slate-400 font-medium mb-0.5">Jawaban Anda:</span><span class="${isCorrect?'text-emerald-700 font-bold':'text-rose-600 font-bold'}">${userAnsText}</span></div><div class="p-2.5 rounded-lg bg-white border border-slate-200"><span class="block text-slate-400 font-medium mb-0.5">Kunci Jawaban Benar:</span><span class="text-emerald-700 font-bold">${correctAnsText}</span></div></div><div class="text-xs text-slate-600 bg-white/80 p-2.5 rounded-lg border border-slate-200"><span class="font-semibold text-slate-700">Penjelasan:</span> ${q.explanation}</div>`;listContainer.appendChild(item);});}
+function triggerSurprise(){const container=document.getElementById('surprise-container');for(let i=0;i<50;i++){const conf=document.createElement('div');conf.className='absolute w-2 h-2 rounded-full animate-bounce';conf.style.backgroundColor=['#10b981','#f59e0b','#3b82f6','#ef4444','#8b5cf6'][Math.floor(Math.random()*5)];conf.style.left=`${Math.random()*100}%`;conf.style.top=`${Math.random()*50}%`;conf.style.animationDuration=`${1+Math.random()*2}s`;container.appendChild(conf);}}
+function sendToWhatsApp(){let correctCount=0;state.questions.forEach((q,idx)=>{if(state.answers[idx]===q.answer)correctCount++;});const score=Math.round(correctCount/state.questions.length*100),text=`Halo Kak Pembina,\n\nBerikut adalah hasil Ujian Simulasi PUPK Pramuka Penggalang:\n\n• Nama Regu: *${state.regu}*\n• Nama Peserta: *${state.nama}*\n• Nilai Akhir: *${score}*\n• Jawaban Benar: *${correctCount} dari 35 Soal*\n• Status: *${score>=75?'LULUS (Sangat Baik)':score>=60?'LULUS (Cukup)':'REMEDIAL'}*\n\nTerima kasih Kak!`;window.open(`https://api.whatsapp.com/send?phone=6285770799461&text=${encodeURIComponent(text)}`,'_blank');}
+let modalCallback=null;function showModal(title,message,callback){document.getElementById('modal-title').textContent=title;document.getElementById('modal-message').textContent=message;modalCallback=callback;document.getElementById('custom-modal').classList.remove('hidden');document.getElementById('custom-modal').classList.add('flex');}
+function closeModal(){document.getElementById('custom-modal').classList.remove('flex');document.getElementById('custom-modal').classList.add('hidden');modalCallback=null;}
+document.getElementById('modal-btn-confirm').addEventListener('click',()=>{if(modalCallback)modalCallback();closeModal();});
 </script>
 </body>
 </html>
